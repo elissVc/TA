@@ -3,41 +3,71 @@
 
 using namespace std;
 
-void linearSearch(int arr[], int size, int target) {
-    cout << "Лінійний пошук\n";
-    int steps = 0;
+void printArray(int arr[], int size) {
+    cout << "[";
     for (int i = 0; i < size; i++) {
-        steps++;
-        if (arr[i] == target) {
-            cout << "Елемент " << target << " знайдено за " << steps << " кроків на індексі " << i << ".\n";
-            return;
-        }
+        cout << arr[i];
+        if (i < size - 1) cout << ", ";
     }
-    cout << "Елемент не знайдено. Кроків: " << steps << "\n";
+    cout << "]";
 }
 
-void binarySearch(int arr[], int size, int target) {
-    cout << "Двійковий пошук\n";
-    int left = 0;
-    int right = size - 1;
-    int steps = 0;
+void bubbleSort(int arr[], int size) {
+    cout << "Сортування бульбашкою\n";
+    int totalSteps = 0;
 
-    while (left <= right) {
-        steps++;
-        int mid = left + (right - left) / 2;
+    for (int i = 0; i < size - 1; i++) {
+        int stepsInIteration = 0;
+        bool swapped = false;
 
-        if (arr[mid] == target) {
-            cout << "Елемент " << target << " знайдено за " << steps << " кроків на індексі " << mid << ".\n";
-            return;
+        for (int j = 0; j < size - i - 1; j++) {
+            stepsInIteration++;
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                swapped = true;
+                stepsInIteration++;
+            }
         }
-        if (arr[mid] < target) {
-            left = mid + 1;
-        }
-        else {
-            right = mid - 1;
-        }
+        totalSteps += stepsInIteration;
+        cout << "Етап " << (i + 1) << ": ";
+        printArray(arr, size);
+        cout << "  Виконано дій: " << stepsInIteration << "\n";
+
+        if (!swapped) break;
     }
-    cout << "Елемент не знайдено. Кроків: " << steps << "\n";
+    cout << "Загальна кількість виконаних дій під час сортування: " << totalSteps << "\n";
+}
+
+void selectionSort(int arr[], int size) {
+    cout << "Сортування вибором\n";
+    int totalSteps = 0;
+
+    for (int i = 0; i < size - 1; i++) {
+        int minIndex = i;
+        int stepsInIteration = 0;
+
+        for (int j = i + 1; j < size; j++) {
+            stepsInIteration++;
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        if (minIndex != i) {
+            int temp = arr[minIndex];
+            arr[minIndex] = arr[i];
+            arr[i] = temp;
+            stepsInIteration++;
+        }
+
+        totalSteps += stepsInIteration;
+        cout << "Етап " << (i + 1) << ": ";
+        printArray(arr, size);
+        cout << " Виконано дій: " << stepsInIteration << "\n";
+    }
+    cout << "Загальна кількість виконаних дій під час сортування: " << totalSteps << "\n";
 }
 
 int main() {
@@ -47,21 +77,28 @@ int main() {
     cout << "Введіть розмір масиву: ";
     cin >> size;
 
-    int* arrForSearch = new int[size];
-    cout << "Введіть " << size << " елементів масиву (для двійкового пошуку вводьте відсортовані дані):\n";
+    int* arrForBubble = new int[size];
+    int* arrForSelection = new int[size];
+
+    cout << "Введіть " << size << " елементів масиву:\n";
     for (int i = 0; i < size; i++) {
-        cin >> arrForSearch[i];
+        cin >> arrForBubble[i];
+        arrForSelection[i] = arrForBubble[i];
     }
 
-    int target;
-    cout << "Введіть елемент для пошуку: ";
-    cin >> target;
-
+    cout << "\nПочатковий масив (Бульбашка): ";
+    printArray(arrForBubble, size);
     cout << "\n";
-    linearSearch(arrForSearch, size, target);
-    cout << "\n";
-    binarySearch(arrForSearch, size, target);
+    bubbleSort(arrForBubble, size);
 
-    delete[] arrForSearch;
+
+    cout << "Початковий масив (Вибір): ";
+    printArray(arrForSelection, size);
+    cout << "\n";
+    selectionSort(arrForSelection, size);
+
+    delete[] arrForBubble;
+    delete[] arrForSelection;
+
     return 0;
 }
